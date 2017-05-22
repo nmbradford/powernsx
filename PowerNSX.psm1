@@ -351,18 +351,7 @@ function Invoke-XpathQuery {
 
     )
 
-    If ( $script:PNsxPSTarget -eq "Core") {
-        #Use the XPath extensions class to perform the query
-        switch ($QueryMethod) {
-            "SelectSingleNode" {
-                [System.Xml.XmlDocumentXPathExtensions]::SelectSingleNode($node,$query)
-            }
-            "SelectNodes" {
-                [System.Xml.XmlDocumentXPathExtensions]::SelectNodes($node,$query)
-            }
-        }
-    }
-    else {
+    If ( -not $script:PNsxPSTarget -eq "Core" -or ( $PSVersionTable.PSEdition.label -match 'beta' )) {
         #Perform the query with the native methods on the node
         switch ($QueryMethod) {
             "SelectSingleNode" {
@@ -370,6 +359,17 @@ function Invoke-XpathQuery {
             }
             "SelectNodes" {
                 $node.SelectNodes($query)
+            }
+        }
+    }
+    else {
+        #Use the XPath extensions class to perform the query
+        switch ($QueryMethod) {
+            "SelectSingleNode" {
+                [System.Xml.XmlDocumentXPathExtensions]::SelectSingleNode($node,$query)
+            }
+            "SelectNodes" {
+                [System.Xml.XmlDocumentXPathExtensions]::SelectNodes($node,$query)
             }
         }
     }
@@ -6291,7 +6291,7 @@ function New-NsxController {
     New-NsxController -ControllerName $ControllerName -ipPool $ippool -cluster $ControllerCluster -datastore $ControllerDatastore -PortGroup $ControllerPortGroup -password $DefaultNsxControllerPassword -connection $Connection -confirm:$false
 
     .EXAMPLE
-    A secondary or tertiary controller does not require a Password to be defined. 
+    A secondary or tertiary controller does not require a Password to be defined.
 
     New-NsxController -ipPool $ippool -cluster $ControllerCluster -datastore $ControllerDatastore -PortGroup $ControllerPortGroup -connection $Connection -confirm:$false
     #>
