@@ -351,7 +351,7 @@ function Invoke-XpathQuery {
 
     )
 
-    If ( -not $script:PNsxPSTarget -eq "Core" -or ( $PSVersionTable.PSEdition.Label -match 'beta' )) {
+    If ( -not $script:PNsxPSTarget -eq "Core" -or ( $PSVersionTable.PSVersion.Label -match 'beta' )) {
         #Perform the query with the native methods on the node
         switch ($QueryMethod) {
             "SelectSingleNode" {
